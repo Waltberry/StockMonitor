@@ -1,0 +1,31 @@
+# Gradle files
+.gradle/
+
+# IDE-specific files
+.vscode/
+
+# Log files
+*.log
+
+# Build output directories
+/build/
+**/build/
+
+# Dependency directory
+.gradle/
+
+# Gradle Wrapper
+gradle/wrapper/gradle-wrapper.properties
+
+# Temporary files
+*.tmp
+*.swp
+
+# Ignore local configuration files
+local.properties
+
+# Mac-specific files
+.DS_Store
+
+# Windows-specific files
+Thumbs.db
