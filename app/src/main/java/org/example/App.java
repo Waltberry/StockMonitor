@@ -1,50 +1,77 @@
+package com.example.stockmonitor;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class App {
-    private static final String SYMBOL = "^DJI";
-    private static final Queue<StockData> stockDataQueue = new LinkedList<>();
+public class App extends Application {
+
+    private static final int MAX_DATA_POINTS = 50;
+    private Queue<Number> timeQueue = new LinkedList<>();
+    private Queue<Number> priceQueue = new LinkedList<>();
+    private XYChart.Series<Number, Number> series = new XYChart.Series<>();
+    private int xSeriesData = 0;
 
     public static void main(String[] args) {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    Stock stock = YahooFinance.get(SYMBOL);
-                    double price = stock.getQuote().getPrice().doubleValue();
-                    long timestamp = System.currentTimeMillis();
-                    stockDataQueue.add(new StockData(price, timestamp));
+        launch(args);
+    }
 
-                    System.out.println("Stock price: " + price + " at " + timestamp);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    @Override
+    public void start(Stage stage) {
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Time");
+        yAxis.setLabel("Stock Price");
+
+        final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setAnimated(false);
+        lineChart.setTitle("Dow Jones Industrial Average Stock Price");
+
+        series.setName("Stock Price Data");
+        lineChart.getData().add(series);
+
+        Scene scene = new Scene(lineChart, 800, 600);
+        stage.setScene(scene);
+        stage.show();
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            try {
+                addDataToSeries();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }, 0, 5000); // 0 delay, 5000ms period (5 seconds)
-    }
-}
-
-class StockData {
-    private final double price;
-    private final long timestamp;
-
-    public StockData(double price, long timestamp) {
-        this.price = price;
-        this.timestamp = timestamp;
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
-    public double getPrice() {
-        return price;
-    }
+    private void addDataToSeries() throws IOException {
+        Stock stock = YahooFinance.get("^DJI");
+        double price = stock.getQuote().getPrice().doubleValue();
+        Date date = new Date();
+        String formattedDate = new SimpleDateFormat("HH:mm:ss").format(date);
 
-    public long getTimestamp() {
-        return timestamp;
+        timeQueue.add(xSeriesData);
+        priceQueue.add(price);
+
+        series.getData().add(new XYChart.Data<>(xSeriesData, price));
+        if (series.getData().size() > MAX_DATA_POINTS) {
+            series.getData().remove(0);
+        }
+        xSeriesData++;
     }
 }

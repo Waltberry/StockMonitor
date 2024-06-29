@@ -1,17 +1,51 @@
 # StockMonitor
 
-StockMonitor is a comprehensive application designed to monitor and analyze stock market trends. It provides users with real-time stock data and various tools to help them make informed decisions about their investments.
+StockMonitor is an application that queries the Dow Jones Industrial Average (DJIA) stock price every five seconds and displays an updated line graph. This visualization tool helps internal employees at Citi to monitor stock prices in real-time.
 
-## Features
+## Prerequisites
 
-- Real-time stock data monitoring
-- Historical data analysis
-- Customizable alerts and notifications
-- Detailed stock analysis tools
+- Java 22
+- Gradle
+- Yahoo Finance API
+- JavaFX
 
 ## Installation
 
-### Prerequisites
+1. Clone the repository:
 
-- Java Development Kit (JDK) 8 or higher
-- Gradle 6.0 or higher
+    ```bash
+    git clone https://github.com/Waltberry/StockMonitor.git
+    cd StockMonitor
+    ```
+
+2. Build the application using Gradle:
+
+    ```bash
+    gradle build
+    ```
+
+## Running the Application
+
+To run the application, use the following command:
+
+```bash
+gradle run
+```
+
+## Application Features
+
+- Queries the DJIA stock price every five seconds using the Yahoo Finance API.
+- Displays a live updating line graph with time on the x-axis and stock price on the y-axis.
+
+## Development
+
+If you want to contribute to the development of this project, follow these steps:
+
+- Fork the repository.
+- Create a new branch for your feature or bugfix.
+- Commit your changes.
+- Push your changes to your forked repository.
+- Create a pull request.
+
+## License
+- This project is licensed under the MIT License.
